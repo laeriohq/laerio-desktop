@@ -37,3 +37,7 @@ release/
 # Local launcher scripts (user-specific, do not commit)
 /*.bat
 /*.ps1
+# L'AERIO sidecar build artifacts (Phase 6)
+sidecar/__pycache__/
+sidecar/**/__pycache__/
+sidecar/.pytest_cache/

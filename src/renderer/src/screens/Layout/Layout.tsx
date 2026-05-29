@@ -37,8 +37,12 @@ import {
   Kanban as KanbanIcon,
   Download,
 } from "../../assets/icons";
-import type { LucideIcon } from "lucide-react";
+import { Building2, Microscope, Activity, type LucideIcon } from "lucide-react";
 import { useI18n } from "../../components/useI18n";
+// L'AERIO HQ panels (Phase 6 MVP)
+import BrandsPanel from "../../panels/laerio/BrandsPanel";
+import ResearchPanel from "../../panels/laerio/ResearchPanel";
+import HealthPanel from "../../panels/laerio/HealthPanel";
 
 type View =
   | "chat"
@@ -54,7 +58,11 @@ type View =
   | "schedules"
   | "kanban"
   | "gateway"
-  | "settings";
+  | "settings"
+  // L'AERIO HQ panels (Phase 6 MVP)
+  | "laerio-brands"
+  | "laerio-research"
+  | "laerio-health";
 
 const NAV_ITEMS: { view: View; icon: LucideIcon; labelKey: string }[] = [
   { view: "chat", icon: ChatBubble, labelKey: "navigation.chat" },
@@ -71,6 +79,11 @@ const NAV_ITEMS: { view: View; icon: LucideIcon; labelKey: string }[] = [
   { view: "schedules", icon: Timer, labelKey: "navigation.schedules" },
   { view: "gateway", icon: Signal, labelKey: "navigation.gateway" },
   { view: "settings", icon: SettingsIcon, labelKey: "navigation.settings" },
+  // L'AERIO HQ panels (Phase 6 MVP) — labelKey falls back to view name if
+  // the i18n key is missing.
+  { view: "laerio-brands", icon: Building2, labelKey: "laerio.brands" },
+  { view: "laerio-research", icon: Microscope, labelKey: "laerio.research" },
+  { view: "laerio-health", icon: Activity, labelKey: "laerio.health" },
 ];
 
 interface LayoutProps {
@@ -406,6 +419,23 @@ function Layout({
         {visitedViews.has("settings") && (
           <div style={paneStyle("settings")}>
             <Settings profile={activeProfile} />
+          </div>
+        )}
+
+        {/* L'AERIO HQ panels (Phase 6 MVP) */}
+        {visitedViews.has("laerio-brands") && (
+          <div style={paneStyle("laerio-brands")}>
+            <BrandsPanel />
+          </div>
+        )}
+        {visitedViews.has("laerio-research") && (
+          <div style={paneStyle("laerio-research")}>
+            <ResearchPanel />
+          </div>
+        )}
+        {visitedViews.has("laerio-health") && (
+          <div style={paneStyle("laerio-health")}>
+            <HealthPanel />
           </div>
         )}
       </main>

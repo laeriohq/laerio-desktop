@@ -8,6 +8,11 @@ import {
   dialog,
   clipboard,
 } from "electron";
+import {
+  registerLaerioHandlers,
+  startLaerioSidecar,
+  stopLaerioSidecar,
+} from "./laerio";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import type { AppUpdater } from "electron-updater";
@@ -1762,6 +1767,9 @@ app.whenReady().then(() => {
 
   buildMenu();
   setupIPC();
+  // L'AERIO additions (Phase 6 MVP)
+  registerLaerioHandlers();
+  startLaerioSidecar();
   createWindow();
   setupUpdater();
 
@@ -1786,6 +1794,7 @@ app.whenReady().then(() => {
 });
 
 app.on("window-all-closed", () => {
+  stopLaerioSidecar();
   if (process.platform !== "darwin") {
     stopGateway();
     stopSshTunnel();

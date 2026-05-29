@@ -954,10 +954,42 @@ const hermesAPI = {
     ipcRenderer.invoke("read-logs", logFile, lines),
 };
 
+// L'AERIO HQ additions (Phase 6 MVP). All routes through main process IPC
+// which proxies to the FastAPI sidecar on 127.0.0.1:5180.
+const laerioAPI = {
+  health: (): Promise<{
+    counts: Record<string, number>;
+    db_exists: boolean;
+    db_path?: string;
+  }> => ipcRenderer.invoke("laerio-health"),
+
+  brandsSearch: (args: {
+    q?: string;
+    tierMax?: number;
+    niche?: string;
+    limit?: number;
+    offset?: number;
+  }): Promise<{ rows: unknown[]; count: number }> =>
+    ipcRenderer.invoke("laerio-brands-search", args),
+
+  researchFind: (
+    intent: string,
+    topK?: number,
+  ): Promise<{ hits: unknown[]; count: number; intent: string }> =>
+    ipcRenderer.invoke("laerio-research-find", { intent, topK }),
+
+  researchPitch: (
+    brandId: string,
+    k?: number,
+  ): Promise<{ brand_id: string; angles: string[]; count: number }> =>
+    ipcRenderer.invoke("laerio-research-pitch", { brandId, k }),
+};
+
 if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld("electron", electronAPI);
     contextBridge.exposeInMainWorld("hermesAPI", hermesAPI);
+    contextBridge.exposeInMainWorld("laerioAPI", laerioAPI);
   } catch (error) {
     console.error(error);
   }
@@ -966,4 +998,6 @@ if (process.contextIsolated) {
   window.electron = electronAPI;
   // @ts-ignore (define in dts)
   window.hermesAPI = hermesAPI;
+  // @ts-ignore (define in dts)
+  window.laerioAPI = laerioAPI;
 }
