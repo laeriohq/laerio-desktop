@@ -10,10 +10,11 @@ from fastapi import FastAPI
 
 def build_app() -> FastAPI:
     app = FastAPI(title="L'AERIO HQ Core", version="0.1.0")
-    from routes import health, brands, research  # type: ignore
+    from routes import health, brands, research, state  # type: ignore
     app.include_router(health.router)
     app.include_router(brands.router)
     app.include_router(research.router)
+    app.include_router(state.router)
     return app
 
 
